@@ -1,13 +1,5 @@
 
 
-
-
-function tournamentSelection(x::AbstractString)
-    
-end
-
-tournamentPopulation = hcat([population[:,Random.randperm(size(population)[2])] for i in 1:tSize]...) ### Self Tournaments are possible here.
-
 A1 = "AAGTAAGAAAATGAAGCCCCTTGTCCAGCAGTCAGCTTAAGGCGTGGTGTAGATAATATATGCATTAGACCTTAGTTAAGTCACGCAGTCACAATTAGGCCGAATTAcCGGGCCAGGTTCCCACGTTAGGGACCCTGCATTGCTCGTTTAGGATATGTCTTTTGCTGCGTTTGCGAGACACAAGGTAGCAAGGATACGTCCGGGCACTCTCTTACA"
 A2 = "TACGTAGCTACTTGCAGGACCGCTTAAGTCTGCTTTGATGTCCTGGTTCGTGGCAGGCGGGGAGTCGAGATATCTCTAATTCGCCCGAACGGTTATAATTAGaCCGAATTAATACCAAGGCAGTCTGCCGGTGTTGTATGGTGTCTTGACGAGAATAGTAAGAGAATGAGGTGTCCCGGCGTGATTGGCTGGTGGGTGTTTTACTAAGAGCCTGAA"
 A3 = "TCGCAAGCCTCCCCACTCCATCCGTTCAAGGTTCACCGACGTCCTAACTGCCGTTCCCAATTAGGCgGAATTAACTGGCTGGGGAGTGGGATTGAAACCAGGCTTTTTATCAAGAGGTACGGCTGTCTGTAGCGTGACGTGAGGCTCAGCGGCTTAACATAGACACCGTCTGCACATAATTTCTCGCTTCATGGTCTCGAAATTGACAAATGATCC"
@@ -19,131 +11,6 @@ seq = [A1,A2,A3,A4]
 population = hcat([rand(1:length(seq[1]),length(seq)) for i in 1:populationSize]...)
 population = transpose(population)
 ### seq = hcat([seq[i] for i in 1:length(seq)])
-
-############################## tournament Selection function code ###########################################################################################
-import Random
-q1 = 0
-function profile(population,seq,width)
-    p = [Dict('A' => 0, 'C' => 0, 'T' => 0, 'G' => 0) for i in 1:width] ### build a profile
-    parray = [p for i in 1:size(population)[1]] ### build an array of profiles
-    for i in 1:size(population)[1] ### For each individual
-        for j in 1:size(population)[2] ### traverse each seq
-            if (population[i,j]+width > length(seq[j]))
-                br = length(seq[j])
-            else
-                br = population[i,j]+width
-            end
-            for c in 1:length(seq[j][population[i,j]:br-1]) ### Traverse each letter
-                parray[i][c][uppercase(seq[j][c+population[i,j]])] += 1
-            end
-        end
-    end
-    return(parray)
-end
-
-function tournamentSelection(population,tSize,seq)
-    ### Population is group into tournaments of size tSize.
-    ### Output Winners of tournaments
-    
-    tournamentPopulation = population[Random.randperm(size(population)[1]),:]
-
-    for j in 1:tSize:size(tournamentPopulation)[2]-tSize
-        println(j)
-        p = profile(tournamentPopulation[j:(j+tSize-1),:],seq,width)
-    end
-    return crossover_population
-end
-  
-
-
-  
-##############################################################################################################################################
-
-
-
-### HI
-
-
-x = 5
-print(x)
-
-
-# ADJUST:  A(a1,…,ai,…,am)  
-# i ? 1 
-# DO 
-#      a'i=argmax  ?ent(a1,?…?,?ai,?…?,?am), 1 = ai = li - w + 1 
-#      ai?a'i  
-#     i ? i + 1 
-#     if i > m then i ? 1 
-# UNTIL no further improvements obtained 
-  
-
-
-
-
-# SHIFT:  (A(a1,…,ai,…,am))  
-# k' = argmax  ?ent(a1+k,………,am+k),-w=k=w  
-# A?A(a1+k'………,am+k')  
-# Note 1: if ai = 0 then ai + k = 0 for all k (no added sites) 
-# Note 2: If ai + k < 0 or ai + k > li - w + 1, then set ai + k = 0 
-
-
-
-
-BEGIN 
-    Initialization: i ? 0 
-        Setting parameters: 
-            population size N = 500 
-            mutation rate r = 0.001 
-            maximum generation G = 3000: 
-        Generating initial population P0: 
-    Repeat: i ? i + 1 
-        Mutate individuals;  
-        Crossover individuals;  
-        Selection of individuals; 
-    Until (i = G or convergence) 
-    Choose best individual Aopt; 
-    Repeat 
-        ADJUST(Aopt); 
-        SHIFT(Aopt); 
-    Until no further improvements obtained 
-    PWM-scan on Aopt to extract additional weaker motif sites 
-END 
-
-
-
-  
-A1 = AAGTAAGAAAATGAAGCCCCTTGTCCAGCAGTCAGCTTAAGGCGTGGTGTAGATAATATATGCATTAGACCTTAGTTAAGTCACGCAGTCACAATTAGGCCGAATTAcCGGGCCAGGTTCCCACGTTAGGGACCCTGCATTGCTCGTTTAGGATATGTCTTTTGCTGCGTTTGCGAGACACAAGGTAGCAAGGATACGTCCGGGCACTCTCTTACA
-A2 = TACGTAGCTACTTGCAGGACCGCTTAAGTCTGCTTTGATGTCCTGGTTCGTGGCAGGCGGGGAGTCGAGATATCTCTAATTCGCCCGAACGGTTATAATTAGaCCGAATTAATACCAAGGCAGTCTGCCGGTGTTGTATGGTGTCTTGACGAGAATAGTAAGAGAATGAGGTGTCCCGGCGTGATTGGCTGGTGGGTGTTTTACTAAGAGCCTGAA
-A3 = TCGCAAGCCTCCCCACTCCATCCGTTCAAGGTTCACCGACGTCCTAACTGCCGTTCCCAATTAGGCgGAATTAACTGGCTGGGGAGTGGGATTGAAACCAGGCTTTTTATCAAGAGGTACGGCTGTCTGTAGCGTGACGTGAGGCTCAGCGGCTTAACATAGACACCGTCTGCACATAATTTCTCGCTTCATGGTCTCGAAATTGACAAATGATCC
-A4 = GCACAGCTGGCTCACCTTGTATGCACAGGCTGACTTCATGGCACGCCGATTCCAGCCGGGAATaAGGaCGAATTAACGTCTACAAATAGCTGAGAGACCTTCTAACATAAGAAGCGCTGTAGTCGCTGCCCCAACGTAGATTGGCGGGTCCAACACTAGGCATGTTGAACCCAATTTACGGCGGCTCGCCCGTTACAATCGTAGAGCCATACCGCC
-
-strand_length = 216
-motif_length = 5
-  
-
-M1 = [5, 6, 7, 8]
-M2 = [2, 4, 10, 14]
-M3 = [3, 9, 27, 28]
-M4 = [35, 46, 47, 58]
-M5 = [33, 42, 41, 23]
-M6 = [44, 50, 51, 32]
-
-list1 = [M1, M2, M3, M4, M5, M6]
-list2 = [M2, M3, M5, M1, M6, M4]
-
-1:length(initial_population)
-derrangement(1:initial_population)
-
-
-  
-initial_population = [M1, M2, M3, M4, M5]
-
-initial_population = [(5), (5), (5), (5)] ### A = Array(Float64,1,1) ### Init as matrix 
-
-https://rosettacode.org/wiki/Permutations/Derangements#Julia
-
-after_crossover_population = append!(initial_population, initial_population)
 
 
 ############################## Crossover function code ###########################################################################################
@@ -211,25 +78,11 @@ function generate_random_initial_population(population_size, number_of_sequences
     return generated_population
 end
 
-  julia> Random.seed!(1234);
+Random.seed!(1234);
 
-julia> x2 = rand(2)
-2-element Array{Float64,1}:
- 0.590845
- 0.766797
-  
-  generate_random_initial_population(3,5,10,4)
-3-element Array{Any,1}:
- [2, 6, 1, 2, 4]
- [6, 4, 2, 6, 4]
- [5, 2, 3, 1, 3]
+generate_random_initial_population(3,5,10,4)
 
-#Mayank Op:
-[5, 4, 4, 5, 4]
-[3, 2, 4, 3, 5]
-[6, 3, 4, 1, 3]
 
-  
 ##############################################################################################################################################
 
 ###################### Mutation functions ####################################################################################################
@@ -320,11 +173,32 @@ function count_mutations(initial_population, mutated_population)
 end
 
 
-##############################################################################################################################################
-  ### Ian's sad work
 
-  ### This is not done yet. I struggled for a while with vectorization, like this: a = [1,2,3]; sin.(a); It seems that you guys are using arrays of arrays or arrays of strings
-  ### rather than matrices. It will be fine either way, but we should probably make sure everyone is on the same page with that. Array{Float64,1}
+############################## tournament Selection function code ###########################################################################################
+
+function Score(Alignment)
+    k = length(Alignment[1])
+    profile = Dict('A' => [0 for i in 1:k],
+            'C' => [0 for i in 1:k],
+            'T' => [0 for i in 1:k],
+            'G' => [0 for i in 1:k]) ### 1 profile
+    
+    for i in 1:length(Alignment) ### For each kmer
+        for j in 1:length(Alignment[i]) ### traverse each base
+            base = uppercase(Alignment[i][j])
+            profile[base][j] += 1
+        end
+    end
+    m = sum(values(profile))[1]
+    score = 0
+    for col in 1:length(profile['A'])
+        score += (m - max(profile['A'][col], profile['C'][col], profile['T'][col], profile['G'][col]))
+    end
+    return(score)
+end
+
+import Random
+
 function profile(population,seq,width)
     p = [Dict('A' => 0, 'C' => 0, 'T' => 0, 'G' => 0) for i in 1:width] ### build a profile
     parray = [p for i in 1:size(population)[1]] ### build an array of profiles
@@ -343,23 +217,37 @@ function profile(population,seq,width)
     return(parray)
 end
 
-function tournamentSelection(population,tSize,seq)
+function tournamentSelection(population,tSize,seq,motifWidth)
     ### Population is group into tournaments of size tSize.
     ### Output Winners of tournaments
     
     tournamentPopulation = population[Random.randperm(size(population)[1]),:]
-
-    for j in 1:tSize:size(tournamentPopulation)[2]-tSize
+    Winners = []
+    
+    for j in 1:tSize:(size(tournamentPopulation)[1]-tSize+1)
         println(j)
-        p = profile(tournamentPopulation[j:(j+tSize-1),:],seq,width)
+        println(tournamentPopulation[j:j+tSize-1,:])
+        bracket = tournamentPopulation[j:j+tSize-1,:]
+        
+        topScore = typemax(Int64) ### Worst possible score is large number
+        bracketWinner = -1
+        for b in 1:size(bracket)[1]
+            CurrentAlignment = [seq[idx][bracket[b][idx]:bracket[b][idx]+motifWidth-1] for idx in 1:length(seq)]
+            # println(CurrentAlignment)
+            # println(Score(CurrentAlignment))
+            if(topScore > Score(CurrentAlignment) )
+                topScore = Score(CurrentAlignment)
+                println("Found new top score:", topScore)
+                bracketWinner = bracket[b]
+            end
+        end
+       push!(Winners,bracketWinner)
     end
-    return crossover_population
+    return Winners
 end
   
-function score()
-  ### I was supposed to write this and I didn't because data structures are hard! #sad
   
-end
+
 
 
 
